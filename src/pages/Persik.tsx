@@ -11,16 +11,25 @@ import {
 } from '@vkontakte/vkui'
 import persikImage from '../assets/persik.png'
 import { back } from '@cteamdev/router'
-
 import  './Home.css'
 
+interface Idata{
+  id:number;
+  name:string;
+  text:string;
+}
+
 export const Persik: React.FC<PanelProps> = ({ nav }: PanelProps) => {
-  const initialState = [{}]
-  const [dataPrimeta,setDataPrimeta] = useState(initialState)
+  const initialState = [{
+    id:123,
+    name:'assa',
+    text:'asdas'
+  }]
+  const [dataPrimeta,setDataPrimeta] = useState<Idata[]>(initialState)
   const [textInput,setTextInput] = useState('')
  
 
-  const handleInputChange = (event)=>{
+  const handleInputChange = (event:any)=>{
     const text = event.target.value
     const textCorrect = text.trim()
     setTextInput(textCorrect)
@@ -44,7 +53,7 @@ export const Persik: React.FC<PanelProps> = ({ nav }: PanelProps) => {
   }
   console.log('zzz',dataPrimeta);
   
-  function translit(word){
+  function translit(word:string){
     var answer = '';
     var converter = {
       'а': 'a',    'б': 'b',    'в': 'v',    'г': 'g',    'д': 'd',
