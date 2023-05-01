@@ -36,6 +36,15 @@ export const Day: React.FC<PanelProps> = ({ nav }: PanelProps) => {
         console.log(result.content.inner_blocks[0].omens_list.omens);
         console.log('zzz', dataPrimeta);
       }
+      if (dayNedeli === 2){
+        let textCorrect = 'vtornik'
+        const response = await fetch(`https://api.allorigins.win/raw?url=https://horoscopes.rambler.ru/api/front/v3/omens/word/${textCorrect}/`); 
+        const result = await response.json(); 
+        console.log(result);
+        setDataPrimeta(result.content.inner_blocks[0].omens_list.omens)
+        console.log(result.content.inner_blocks[0].omens_list.omens);
+        console.log('zzz', dataPrimeta);
+      }
          
 
     

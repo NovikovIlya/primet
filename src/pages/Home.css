@@ -1,8 +1,10 @@
 .cont{
-    width: 1130px;
+    width: 500px;
     margin: 0 auto;
 }
-
+.SplitCol--fixed,.Tabbar--shadow{
+    display: none;
+}
 .InputParent{
     display: flex;
     flex-wrap: wrap;

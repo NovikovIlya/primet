@@ -8,7 +8,7 @@ import {
 import '@vkontakte/vkui/dist/vkui.css'
 import { View } from '@cteamdev/router'
 import { Home, Info, Persik ,Day } from './pages'
-// import { Navigation } from './components/navigation'
+import { Navigation } from './components/navigation'
 import { getPlatform } from './utils'
 import { useSetAtomState } from '@mntm/precoil'
 import { vkUserAtom } from './store'
@@ -31,7 +31,7 @@ export const App: React.FC = () => {
     <ConfigProvider platform={platform}>
       <AdaptivityProvider>
         <AppRoot>
-          {/* <Navigation> */}
+          <Navigation>
             <View nav='/'>
               <Home nav='/' />
               <Persik nav='/persik' />
@@ -40,7 +40,7 @@ export const App: React.FC = () => {
             {/* <View nav='/info'>
               <Info nav='/' />
             </View> */}
-          {/* </Navigation> */}
+          </Navigation>
         </AppRoot>
       </AdaptivityProvider>
     </ConfigProvider>
