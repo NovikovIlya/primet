@@ -49,5 +49,4 @@ npm run deploy
 
 Готово!
 
-## Пример
->https://vk.com/app7974220
+
