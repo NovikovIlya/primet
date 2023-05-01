@@ -1,0 +1,20 @@
+.cont{
+    width: 1130px;
+    margin: 0 auto;
+}
+
+.InputParent{
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+.red{
+    background-color: brown;
+}
+
+@media screen and (max-width:600px){
+    .cont{
+        width: 100%;
+    }
+}
