@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   AdaptivityProvider,
   AppRoot,
@@ -7,7 +7,7 @@ import {
 } from '@vkontakte/vkui'
 import '@vkontakte/vkui/dist/vkui.css'
 import { View } from '@cteamdev/router'
-import { Home, Info, Persik ,Day } from './pages'
+import { Home, Info, Persik ,Day,Alphabit } from './pages'
 import { Navigation } from './components/navigation'
 import { getPlatform } from './utils'
 import { useSetAtomState } from '@mntm/precoil'
@@ -17,11 +17,13 @@ import bridge, { UserInfo } from '@vkontakte/vk-bridge'
 export const App: React.FC = () => {
   const platform: PlatformType = getPlatform()
   const setVkUser = useSetAtomState(vkUserAtom)
+  const [fetchedUser,setUser] = useState(null)
 
   useEffect(() => {
     const load = async () => {
       const vkUser: UserInfo = await bridge.send('VKWebAppGetUserInfo')
       setVkUser(vkUser)
+      setUserinfo(vkUser)
     }
 
     load()
@@ -35,11 +37,8 @@ export const App: React.FC = () => {
             <View nav='/'>
               <Home nav='/' />
               <Persik nav='/persik' />
-              <Day nav='/day' />
+              <Day fetchedUser={fetchedUser} nav='/day' />
             </View>
-            {/* <View nav='/info'>
-              <Info nav='/' />
-            </View> */}
           </Navigation>
         </AppRoot>
       </AdaptivityProvider>

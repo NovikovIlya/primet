@@ -1,80 +1,75 @@
 import React, { useEffect, useState } from 'react'
 import { Avatar, Group, Panel, PanelHeader, PanelProps, SimpleCell,Input ,Button} from '@vkontakte/vkui'
 import {
-  Icon28BillheadOutline,
   Icon28ChevronRightOutline,
-  Icon28CheckCircleOutline,
-  Icon28CancelCircleOutline,
-  Icon28PawOutline,
-  Icon28WarningTriangleOutline,
-  Icon28ArticleOutline
+  Icon28FavoriteCircleFillYellow,
+  Icon28Notifications
 } from '@vkontakte/icons'
 import { UserInfo } from '@vkontakte/vk-bridge'
 import { useAtomValue } from '@mntm/precoil'
 import { vkUserAtom } from '../store'
 import { setDoneSnackbar, setErrorSnackbar } from '../hooks'
 import { push } from '@cteamdev/router'
-
-
+import { useRecomendation } from '../store/store1'
+import bridge from '@vkontakte/vk-bridge';
 import  './Home.css'
 
 export const Home: React.FC<PanelProps> = ({ nav }: PanelProps) => {
-
-
-  // const result = translit(`Умом — Россию не понять`)
-  // console.log(result);
   const vkUser: UserInfo = useAtomValue(vkUserAtom)
-  const [dataPrimeta,setDataPrimeta] = useState('')
-  const [textInput,setTextInput] = useState('')
+  const [conditionValue,setContditionValue] = useState(false)
 
-  // const handleInputChange = (event)=>{
-  //   const text = event.target.value
-  //   const textCorrect = text.trim()
-  //   setTextInput(textCorrect)
-  // }
 
-  // const handleButton = ()=>{
-  //   async function heh(){
-  //     console.log(translit('privet'));
-  //     console.log(textInput);
-  //     const textCorrect = translit(textInput)
-  //     const response = await fetch(`https://api.allorigins.win/raw?url=https://horoscopes.rambler.ru/api/front/v3/omens/word/${textCorrect}/`); 
-  //     const result = await response.json(); 
-  //     console.log(result);
-  //   }
-  //   heh()
-  // }
+  function izbranoe(){
+    bridge.send('VKWebAppAddToFavorites')
+  .then((data) => { 
+    if (data.result) {
+      // Мини-приложение или игра добавлены в избранное
+      izbranSwitch()
+    }
+  })
+  .catch((error) => {
+    // Ошибка
+    console.log(error);
+  });
+  }
+
+  function podiskaUvedomlenie(){
+    bridge.send('VKWebAppAllowNotifications')
+  .then((data) => { 
+    if (data.result) {
+      // Разрешение на отправку уведомлений мини-приложением или игрой получено
+      uvedomlenieSwitch()
+    } else {
+      // Ошибка
+    }
+  })
+  .catch((error) => {
+    // Ошибка
+    console.log(error);
+  });
+  }
+
+  window.addEventListener('online',  updateOnlineStatus);
+  window.addEventListener('offline', updateOnlineStatus);
+  let condition
+  function updateOnlineStatus(event:any) {
+   condition = navigator.onLine ? "online" : "offline";
+  // document.body.className = condition;
+  console.log(condition);
+  if (condition === 'offline'){
+    setContditionValue(true)
+  }
+  if (condition === 'online'){
+    setContditionValue(false)
+  }
   
-  // function translit(word){
-  //   var answer = '';
-  //   var converter = {
-  //     'а': 'a',    'б': 'b',    'в': 'v',    'г': 'g',    'д': 'd',
-  //     'е': 'e',    'ё': 'e',    'ж': 'zh',   'з': 'z',    'и': 'i',
-  //     'й': 'y',    'к': 'k',    'л': 'l',    'м': 'm',    'н': 'n',
-  //     'о': 'o',    'п': 'p',    'р': 'r',    'с': 's',    'т': 't',
-  //     'у': 'u',    'ф': 'f',    'х': 'h',    'ц': 'c',    'ч': 'ch',
-  //     'ш': 'sh',   'щ': 'sch',  'ь': '',     'ы': 'y',    'ъ': '',
-  //     'э': 'e',    'ю': 'yu',   'я': 'ya',
-   
-  //     'А': 'A',    'Б': 'B',    'В': 'V',    'Г': 'G',    'Д': 'D',
-  //     'Е': 'E',    'Ё': 'E',    'Ж': 'Zh',   'З': 'Z',    'И': 'I',
-  //     'Й': 'Y',    'К': 'K',    'Л': 'L',    'М': 'M',    'Н': 'N',
-  //     'О': 'O',    'П': 'P',    'Р': 'R',    'С': 'S',    'Т': 'T',
-  //     'У': 'U',    'Ф': 'F',    'Х': 'H',    'Ц': 'C',    'Ч': 'Ch',
-  //     'Ш': 'Sh',   'Щ': 'Sch',  'Ь': '',     'Ы': 'Y',    'Ъ': '',
-  //     'Э': 'E',    'Ю': 'Yu',   'Я': 'Ya'
-  //   };
-   
-  //   for (var i = 0; i < word.length; ++i ) {
-  //     if (converter[word[i]] == undefined){
-  //       answer += word[i];
-  //     } else {
-  //       answer += converter[word[i]];
-  //     }
-  //   }
-   
-  //   return answer;
-  // }
+}
+
+  const izbranProverka =  useRecomendation((state:any)=>state.izbranoe)
+  const izbranSwitch = useRecomendation((state:any)=>state.setIzbranoe)
+
+  const uvedomlenieProverka = useRecomendation((state:any)=>state.uvedomlenie)
+  const uvedomlenieSwitch = useRecomendation((state:any)=>state.setUvedomlenie)
 
 
 
@@ -87,73 +82,54 @@ export const Home: React.FC<PanelProps> = ({ nav }: PanelProps) => {
           before={
             <Avatar size={72} src={vkUser.photo_200} />
           }
-          description='Это же ты!'
+          description=''
         >
-          {vkUser.first_name} {vkUser.last_name}
+         Приветствую, {vkUser.first_name} {vkUser.last_name}!
         </SimpleCell>
       </Group>
-
-      {/* <div className='InputParent'>
-        <Input type='text' placeholder='Введите примету' onChange={handleInputChange} />
-        <Button onClick={handleButton} >Найти</Button>
-      </div> */}
 
 
       <Group>
         <SimpleCell
-          before={<Icon28PawOutline />}
-          after={<Icon28ChevronRightOutline />}
-          onClick={() => push('/persik')}
-        >
-          Приметы по словам!
-        </SimpleCell>
-      </Group>
-      <Group>
-        <SimpleCell
-          before={<Icon28PawOutline />}
+          before={<img className='img img1' src='https://i.ibb.co/vvGHHDs/calendar-1.png' />}
           after={<Icon28ChevronRightOutline />}
           onClick={() => push('/day')}
         >
-          Приметы по дням!
+          <div className='textMen textMen1'>Приметы по <br></br> дням недели</div>
         </SimpleCell>
       </Group>
-      {/* <Group>
-        <SimpleCell
-          before={<Icon28BillheadOutline />}
-          onClick={() => push('/?modal=modal')}
-        >
-          Покажи модальную карточку
-        </SimpleCell>
-      </Group>
+
       <Group>
         <SimpleCell
-          before={<Icon28WarningTriangleOutline />}
-          onClick={() => push('/?popout=alert')}
+          before={<img className='img' src='https://i.ibb.co/zXBdCQN/book.png'/>}
+          after={<Icon28ChevronRightOutline />}
+          onClick={() => push('/persik')}
         >
-          Покажи алерт
-        </SimpleCell>
-        <SimpleCell
-          id='ShowAlert'
-          before={<Icon28ArticleOutline />}
-          onClick={() => push('/?popout=action-sheet')}
-        >
-          Покажи список опций
+          <div className='textMen'>Приметы по<br></br>ключевым словам</div>
         </SimpleCell>
       </Group>
-      <Group>
+
+      {izbranProverka===false&&<Group onClick={izbranoe}>
         <SimpleCell
-          before={<Icon28CheckCircleOutline />}
-          onClick={() => setDoneSnackbar('Это добрый снекбар')}
+          before={<Icon28FavoriteCircleFillYellow />}
+          onClick={() =>{
+          }}
         >
-          Покажи добрый снекбар
+          Добавьте приложение в избранное!
         </SimpleCell>
+      </Group>}
+
+      {uvedomlenieProverka===false&&<Group onClick={podiskaUvedomlenie}>
         <SimpleCell
-          before={<Icon28CancelCircleOutline />}
-          onClick={() => setErrorSnackbar('Это злой снекбар')}
+          before={<Icon28Notifications />}
+          onClick={() =>{
+          }}
         >
-          Покажи злой снекбар
+          Подпишитесь на уведомления!
         </SimpleCell>
-      </Group> */}
+      </Group>}
+      {conditionValue && <p className ='red1'>Потеряна связь с интернетом</p>}
+      
     </Panel>
     </div>
   )
